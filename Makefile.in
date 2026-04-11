@@ -1,0 +1,10 @@
+#
+# picoRTOS XMODEM library
+#
+# How tu use:
+# -include /path/to/pico-xmodem/Makefile.in
+#
+xmodem-path := $(dir $(lastword $(MAKEFILE_LIST)))
+
+c_src-y   += $(xmodem-path)xmodem.c
+include-y += -I$(xmodem-path)
