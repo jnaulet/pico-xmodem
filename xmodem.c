@@ -246,7 +246,6 @@ static int run_rx_frame(struct xmodem *ctx)
         check(ctx) == 0) {
         /* ACK */
         const char ack = (char)C_ACK;
-        (void)write_for_1s(ctx, &ack, sizeof(ack));
         /* internal state machine */
         ctx->exp_block_num++;
         ctx->retrans_count = 0;
@@ -254,7 +253,9 @@ static int run_rx_frame(struct xmodem *ctx)
         /* callback */
         if (ctx->check == XMODEM_CHECK_CRC16) ctx->exp_block_len -= 4;
         else ctx->exp_block_len -= 3;
-        return xmodem_run_rx_callback(ctx, ctx->frame.data, ctx->exp_block_len);
+        res = xmodem_run_rx_callback(ctx, ctx->frame.data, ctx->exp_block_len);
+        (void)write_for_1s(ctx, &ack, sizeof(ack));
+        return res;
     }
 
     if (ctx->retrans_count++ >= XMODEM_RETRANS_COUNT) {
